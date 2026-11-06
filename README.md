@@ -65,6 +65,26 @@ API `POST /ocr/both` luôn trả về đúng cấu trúc JSON 12 trường:
 Client / Frontend ──▶ FastAPI (:8000) ──▶ vLLM Server (:8001, Qwen/Qwen3-VL-8B-Instruct) ──▶ JSON
 ```
 
+---
+
+## Tiêu chuẩn GPU & Yêu cầu phần cứng
+
+Dự án sử dụng mô hình **Qwen/Qwen3-VL-8B-Instruct** (~8 tỷ tham số). Tuỳ thuộc vào môi trường triển khai, yêu cầu cấu hình GPU như sau:
+
+| Phân khúc | GPU khuyến nghị | VRAM tối thiểu | Chế độ nạp (Precision) | Thời gian xử lý dự kiến | Phù hợp cho |
+|---|---|---|---|---|---|
+| **Production (Khuyến nghị)** | **NVIDIA A100** (40GB / 80GB) hoặc **L40S / RTX 6000 Ada** | **≥ 24GB – 32GB** | `bfloat16` (qua **vLLM**) | **3 – 6 giây / request** (chạy song song nhiều file) | Hệ thống thực tế, chịu tải nhiều request đồng thời, độ chính xác cao nhất |
+| **Tầm trung / Colab Pro** | **NVIDIA L4** (24GB), **RTX 3090 / 4090** (24GB) | **24GB** | `bfloat16` (qua **vLLM**) | **5 – 10 giây / request** | Server nội bộ vừa và nhỏ, môi trường staging |
+| **Thử nghiệm / Colab Free** | **NVIDIA T4** (16GB) hoặc **RTX 4070 / 4080** (12–16GB) | **12GB – 16GB** | **4-bit NF4** (`bitsandbytes` hoặc `AWQ`) | **15 – 40 giây / file** | Thử nghiệm miễn phí trên Google Colab, kiểm tra prompt |
+| **Dev Frontend (Không GPU)** | Không cần GPU (CPU bất kỳ) | **RAM ≥ 4GB** | `VLM_MODE=mock` | **< 0.1 giây** | Lập trình viên ghép nối giao diện, kiểm thử luồng API & Validator |
+
+### Lưu ý kỹ thuật về GPU:
+- **Kiến trúc GPU:** Để chạy chế độ `bfloat16` đầy đủ và đạt tốc độ tối ưu với FlashAttention-2, GPU cần có **Compute Capability ≥ 8.0** (kiến trúc **Ampere, Ada Lovelace, Hopper** như A100, L4, A10G, RTX 30xx/40xx).
+- **Dung lượng VRAM ở `bfloat16`:** Riêng bộ trọng số `Qwen3-VL-8B` chiếm khoảng **17GB – 18GB VRAM**; phần VRAM còn lại (tối thiểu 6GB – 14GB) dùng cho KV Cache để xử lý ảnh độ phân giải cao (`1600px`) và PDF nhiều trang (`--max-model-len 16384`).
+- **Với GPU thế hệ cũ (Compute Capability < 8.0 như Tesla T4, V100):** Không hỗ trợ `bfloat16` phần cứng tốt, notebook sẽ tự động chuyển sang nén **4-bit (`nf4`)** hoặc dùng `float16`.
+
+---
+
 ## Cấu trúc thư mục
 
 ```text
