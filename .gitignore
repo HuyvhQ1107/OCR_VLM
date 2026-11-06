@@ -1,0 +1,14 @@
+.venv/
+venv/
+.idea/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.env
+ocr-cccd-gpkd-plan*.md
+tests/samples/*.jpg
+tests/samples/*.jpeg
+tests/samples/*.png
+tests/samples/*.pdf
+!tests/samples/sample_*.png
+ocr-cccd-gpkd-plan.md

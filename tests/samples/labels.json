@@ -1,0 +1,23 @@
+{
+  "samples": [
+    {
+      "name": "case_both_hkd",
+      "cccd_files": ["sample_cccd.png"],
+      "gpkd_files": ["sample_gpkd_hkd.png"],
+      "expected": {
+        "id_cccd": "001099012345",
+        "ho_ten_cccd": "NGUYỄN VĂN A",
+        "thuong_tru_cccd": "Số 123 Đường Láng, Phường Láng Thượng, Quận Đống Đa, Thành phố Hà Nội",
+        "loai_giay_to": "HO_KINH_DOANH",
+        "ten_cong_ty": "HỘ KINH DOANH NGUYỄN VĂN A",
+        "dia_chi_tru_so": "Số 45 Phố Huế, Phường Ngô Thì Nhậm, Quận Hai Bà Trưng, Thành phố Hà Nội",
+        "ma_so_thue": "0101234567-001",
+        "so_dien_thoai": "0912345678",
+        "email": "hkd.nguyenvana@example.com",
+        "nguoi_dai_dien": "NGUYỄN VĂN A",
+        "id_cccd_dai_dien": "001099012345",
+        "chuc_danh": "Chủ hộ kinh doanh"
+      }
+    }
+  ]
+}
